@@ -23,8 +23,8 @@ from heapq import nlargest
 import os
 # nlp = spacy.load("en_core_web_sm")
 
-# import sentence_transformers
-# from sentence_transformers import SentenceTransformer, util
+import sentence_transformers
+from sentence_transformers import SentenceTransformer, util
 
 with open("tokyo_corpus_embeddings.pkl" , "rb") as file_1, open("tokyo_df.pkl" , "rb") as file_2, open("tokyo_corpus.pkl" , "rb") as file_3:
     corpus_embeddings = pkl.load(file_1)
