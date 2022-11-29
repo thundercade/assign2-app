@@ -22,7 +22,7 @@ import pickle as pkl
 # nlp = spacy.load("en_core_web_sm")
 # from spacy import displacy
 
-from tqdm import tqdm
+#from tqdm import tqdm
 # from sentence_transformers import SentenceTransformer, util
 
 with open("tokyo_corpus_embeddings.pkl" , "rb") as file_1, open("tokyo_df.pkl" , "rb") as file_2, open("tokyo_corpus.pkl" , "rb") as file_3:
