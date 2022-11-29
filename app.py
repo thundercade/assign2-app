@@ -11,9 +11,11 @@ import pandas as pd
 st.write(pd.__version__)
 
 import pickle as pkl
+from tqdm import tqdm
 
-# import spacy
-# from spacy.lang.en.stop_words import STOP_WORDS
+import spacy
+from spacy.lang.en.stop_words import STOP_WORDS
+from spacy import displacy
 # from string import punctuation
 # from collections import Counter
 # from heapq import nlargest
@@ -22,8 +24,7 @@ import pickle as pkl
 # nlp = spacy.load("en_core_web_sm")
 # from spacy import displacy
 
-from tqdm import tqdm
-st.write(tqdm.__version__)
+
 # from sentence_transformers import SentenceTransformer, util
 
 with open("tokyo_corpus_embeddings.pkl" , "rb") as file_1, open("tokyo_df.pkl" , "rb") as file_2, open("tokyo_corpus.pkl" , "rb") as file_3:
