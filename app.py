@@ -31,6 +31,11 @@ with open("tokyo_corpus_embeddings.pkl" , "rb") as file_1, open("tokyo_df.pkl" ,
     df = pkl.load(file_2)
     corpus = pkl.load(file_3)
 
+with open("tokyo_sum_df.pkl" , "rb") as file_4:
+    sum_df = pkl.load(file_4)
+
+with open("tokyo_df1.pkl" , "rb") as file_5:
+    df1 = pkl.load(file_5)
 
 
 st.title("MABA 6490 -- Assignment 2 -- Hotel Search")
@@ -74,8 +79,13 @@ for query in queries:
     for score, idx in zip(top_results[0], top_results[1]):
         st.write("(Score: {:.4f})".format(score))
         # st.write(corpus[idx], "(Score: {:.4f})".format(score))
+
         row_dict = df.loc[df['all_review']== corpus[idx]]
-        st.write("paper_id:  " , row_dict['hotel'] , "\n")
+        row2_dict = sum_df.loc[sum_df['all_review']== corpus[idx]]
+        row3_dict = df1.loc[df1['hotel']==row_dict['hotel'].values[0]]
+        st.write("Hotel Name: " , row_dict['hotel'].values[0])
+        st.write("Hotel Review Summary: " , row2_dict['summary'].values[0])
+        st.write("Website: " , row3_dict['url'].values[0], "\n")
 
 
     # for idx, distance in results[0:closest_n]:
