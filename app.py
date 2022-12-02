@@ -8,7 +8,7 @@
 #imports
 import streamlit as st
 import pandas as pd
-st.write(pd.__version__)
+# st.write(pd.__version__)
 
 import pickle as pkl
 from tqdm import tqdm
@@ -19,7 +19,8 @@ from spacy import displacy
 from string import punctuation
 from collections import Counter
 from heapq import nlargest
-
+from PIL import Image
+import torch
 import os
 # nlp = spacy.load("en_core_web_sm")
 
@@ -37,31 +38,34 @@ with open("tokyo_sum_df.pkl" , "rb") as file_4:
 with open("tokyo_df1.pkl" , "rb") as file_5:
     df1 = pkl.load(file_5)
 
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
-st.title("MABA 6490 -- Assignment 2 -- Hotel Search")
-st.markdown("This app will recommend a hotel in Tokyo based on your input below")
-st.markdown("This is v1")
 
-text = st.text_input('Enter text:')
 
-st.write("You searched for:", text)
 
-st.write(corpus_embeddings.shape)
-st.write(df.shape)
+image = Image.open('tokyo_night.jpg')
+st.image(image, use_column_width=True)
+
+st.title("Find Your Hotel in Tokyo!")
+
+# text = st.text_input('Enter text:')
+#
+# st.write("You searched for:", text)
+#
+# st.write(corpus_embeddings.shape)
+# st.write(df.shape)
 
 # changes started here
 
-embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
-import torch
 
 
 # queries = ['Hotel in Shibuya near a ramen shop',
 #            'Hotel with large rooms and a good breakfast'
 #            ]
 
-queries = st.text_input("Describe the hotel you are looking for:")
-queries=list([queries])
+queries = st.text_input("Enter the kind of hotel you're looking for:")
+queries = list([queries])
 
 # Find the closest 5 sentences of the corpus for each query sentence based on cosine similarity
 top_k = min(5, len(corpus))
@@ -72,21 +76,23 @@ for query in queries:
     cos_scores = util.pytorch_cos_sim(query_embedding, corpus_embeddings)[0]
     top_results = torch.topk(cos_scores, k=top_k)
 
-    st.write("\n\n======================\n\n")
-    st.write("Query:", query)
-    st.write("\nTop 5 most similar sentences in corpus:")
+    st.markdown("""---""")
+    st.write("You searched for:   ", query, "\n")
+    st.subheader("""**Here are our top 5 recommendations:**""")
 
     for score, idx in zip(top_results[0], top_results[1]):
-        st.write("(Score: {:.4f})".format(score))
+        # st.write("(Score: {:.4f})".format(score))
         # st.write(corpus[idx], "(Score: {:.4f})".format(score))
-
+        st.markdown("""---""")
         row_dict = df.loc[df['all_review']== corpus[idx]]
         row2_dict = sum_df.loc[sum_df['all_review']== corpus[idx]]
         row3_dict = df1.loc[df1['hotel']==row_dict['hotel'].values[0]]
         st.write("Hotel Name: " , row_dict['hotel'].values[0])
         st.write("Hotel Review Summary: " , row2_dict['summary'].values[0])
-        st.write("Website: " , row3_dict['url'].values[0], "\n")
+        st.write("Tripadvisor Link: [here](%s)" %row3_dict['url'].values[0], "\n")
+        st.markdown("""---""")
 
+# st.write("check out this [link](%s)" % url)
 
     # for idx, distance in results[0:closest_n]:
     #     print("Score:   ", "(Score: %.4f)" % (1-distance) , "\n" )
@@ -101,4 +107,4 @@ for query in queries:
     #     print(corpus[hit['corpus_id']], "(Score: {:.4f})".format(hit['score']))
     # """
 
-st.write("You made it to the end!")
+st.write("All of your code ran this time!")
